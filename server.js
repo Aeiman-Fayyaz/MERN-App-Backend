@@ -10,12 +10,15 @@ const app = express()
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      "https://mern-app-frontend.vercel.app", // Jo URL console mein error de raha hai
+      process.env.FRONTEND_URL
+    ],
     credentials: true,
-  }),
-)
-app.use(express.json())
-app.use(cookieParser())
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
+);
 
 // Routes
 app.use("/api/auth", authRoutes)
