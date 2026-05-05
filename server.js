@@ -1,47 +1,52 @@
-import "dotenv/config"
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import connectDB from "./config/db.js"
-import authRoutes from "./routes/auth.js"
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/auth.js";
 
-const app = express()
+const app = express();
 
-// Middleware
-app.use(
-  cors({
-    origin: [
-      "https://mern-app-frontend.vercel.app", // Jo URL console mein error de raha hai
-      process.env.FRONTEND_URL
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-  })
-);
+// 1. Universal CORS Configuration (Sabse Pakka Hal)
+app.use(cors({
+  origin: function (origin, callback) {
+    // Ye har request ko allow karega (Testing ke liye best hai)
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+}));
 
-// Routes
-app.use("/api/auth", authRoutes)
+app.use(express.json());
+app.use(cookieParser());
 
-app.get("/", (req, res) => res.send("API is running..."))
+// 2. Routes
+// Ensure karein ke frontend se request '/api/auth' par hi aa rahi hai
+app.use("/api/auth", authRoutes);
 
-// Database Connection & Server Logic
+// Health Check Route
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Server is running perfectly!" });
+});
+
+// 3. Database & Serverless Logic
 const startServer = async () => {
   try {
-    await connectDB()
-    console.log("Database Connected")
+    await connectDB();
+    console.log("MongoDB Atlas Connected");
     
-    // Sirf local development ke liye app.listen chalaein
+    // Sirf Local testing ke liye
     if (process.env.NODE_ENV !== 'production') {
-      const PORT = process.env.PORT || 5000
-      app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+      const PORT = process.env.PORT || 5000;
+      app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     }
   } catch (err) {
-    console.error("DB Connection Error:", err)
+    console.error("DB Connection Error:", err.message);
   }
-}
+};
 
-startServer()
+startServer();
 
-// ERROR FIX: module.exports ki jagah export default use karein
-export default app
+// 4. Vercel ke liye Export
+export default app;
