@@ -15,18 +15,12 @@ const allowedOrigins = [
 ]
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin || "*")
-    } else {
-      callback(new Error("Not allowed by CORS"))
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: [
+    "http://localhost:5173",
+    "https://mern-app-frontend.vercel.app"
+  ],
+  credentials: true
 }))
-
 app.options(/.*/, cors())
 
 app.use(express.json())
@@ -34,5 +28,9 @@ app.use(cookieParser())
 app.use("/api/auth", authRoutes)
 
 app.get("/", (req, res) => res.send("API is running..."))
+const PORT = process.env.PORT || 5000
 
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
 export default app
