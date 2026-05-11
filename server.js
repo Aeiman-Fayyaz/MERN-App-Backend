@@ -16,7 +16,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: [
-    "http://localhost:5173",
+    "http://localhost:5173" ||
     "https://mern-app-frontend.vercel.app"
   ],
   credentials: true
