@@ -8,7 +8,18 @@ const app = express()
 connectDB()
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: function(origin, callback) {
+      const allowed = [
+        process.env.FRONTEND_URL,
+        "https://mern-app-frontend.vercel.app"  // hardcode bhi kar do backup ke liye
+      ].map(url => url?.replace(/\/$/, ""))  // trailing slash remove
+
+      if (!origin || allowed.includes(origin.replace(/\/$/, ""))) {
+        callback(null, true)
+      } else {
+        callback(new Error("Not allowed by CORS"))
+      }
+    },
     credentials: true,
   }),
 )
