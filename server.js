@@ -22,7 +22,6 @@ app.use(cors({
   methods: ["POST" , "GET"],
   credentials: true
 }))
-app.options(/.*/, cors())
 
 app.use(express.json())
 app.use(cookieParser())
