@@ -19,6 +19,7 @@ app.use(cors({
     "http://localhost:5173" ||
     "https://mern-app-frontend.vercel.app"
   ],
+  methods: ["POST" , "GET"],
   credentials: true
 }))
 app.options(/.*/, cors())
