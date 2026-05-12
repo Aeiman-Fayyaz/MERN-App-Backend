@@ -15,10 +15,14 @@ const allowedOrigins = [
 ]
 
 app.use(cors({
-  origin: [
-    "https://mern-app-frontend.vercel.app"
-  ],
-  methods: ["POST" , "GET"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
+    }
+  },
+  methods: ["POST", "GET", "PUT", "DELETE"],
   credentials: true
 }))
 
