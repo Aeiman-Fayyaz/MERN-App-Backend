@@ -16,7 +16,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: [
-    "http://localhost:5173" ||
     "https://mern-app-frontend.vercel.app"
   ],
   methods: ["POST" , "GET"],
