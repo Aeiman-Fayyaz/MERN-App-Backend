@@ -14,7 +14,7 @@ const allowedOrigins = [
   "https://mern-app-frontend.vercel.app"
 ]
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true)
@@ -22,9 +22,14 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"))
     }
   },
-  methods: ["POST", "GET", "PUT", "DELETE"],
-  credentials: true
-}))
+  methods: ["POST", "GET", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions))
+app.options("*", cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
